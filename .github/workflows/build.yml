@@ -17,7 +17,7 @@ jobs:
       - name: Compile Code
         run: |
           # 重点：确保文件名与你上传的一致
-          arm-linux-gnueabi-gcc "alice-sms-pusher源码.c" -o alice-sms -lpthread -lmbedtls -lmbedcrypto -static
+          arm-linux-gnueabi-gcc "alice.c" -o alice-sms -lpthread -lmbedtls -lmbedcrypto -static
 
       - name: Upload Result
         uses: actions/upload-artifact@v4
