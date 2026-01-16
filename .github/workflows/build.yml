@@ -7,20 +7,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # 必须是 v4
+        uses: actions/checkout@v4
 
-      - name: Install Compiler and Libs
+      - name: Install Compiler
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-arm-linux-gnueabi libmbedtls-dev -y
+          sudo apt-get install gcc-arm-linux-gnueabi -y
 
-      - name: Compile Code
+      - name: Download and Build MbedTLS for ARM
         run: |
-          # 使用 *.c 自动匹配文件名，避免中文乱码导致找不到文件
-          arm-linux-gnueabi-gcc *.c -o alice-sms -lpthread -static
+          # 下载 mbedtls 源码并手动用 ARM 编译器编译它
+          git clone --recursive https://github.com/Mbed-TLS/mbedtls.git
+          cd mbedtls
+          make CC=arm-linux-gnueabi-gcc lib -j$(nproc)
+          # 将编译好的库文件移动到上级目录供使用
+          cp library/libmbedtls.a library/libmbedcrypto.a library/libmbedx509.a ..
+          cd ..
+
+      - name: Compile Main Code
+        run: |
+          # 链接刚才手动编译出来的 ARM 静态库
+          arm-linux-gnueabi-gcc alice.c -o alice-sms \
+            -I./mbedtls/include \
+            -L. -lmbedtls -lmbedcrypto -lpthread -static
 
       - name: Upload Result
-        uses: actions/upload-artifact@v4 # 必须是 v4
+        uses: actions/upload-artifact@v4
         with:
           name: alice-sms-arm-binary
           path: alice-sms
