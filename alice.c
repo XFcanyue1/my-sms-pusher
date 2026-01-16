@@ -951,11 +951,11 @@ void extract_and_send_sms_from_log(const char *webhook, const char *headtxt, con
                                 char msg[1024];
                                 snprintf(msg, sizeof(msg),
                                     "短信内容:%s\n设备手机号:%s\n[pdu解码后的信息]\n短消息服务中心:%s\n发件人:%s\n时间戳:%s",
-                                    info.text
+                                    info.text,
                                     device_msisdn[0] ? device_msisdn : "N/A",
                                     info.smsc[0] ? info.smsc : "N/A",
                                     info.sender[0] ? info.sender : "N/A",
-                                    info.timestamp[0] ? info.timestamp : "N/A",
+                                    info.timestamp[0] ? info.timestamp : "N/A"
                                     );
                                 send_dingtalk_msg(webhook, msg);
                             } else {
