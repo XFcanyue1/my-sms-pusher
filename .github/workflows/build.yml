@@ -1,0 +1,26 @@
+name: Build-ARM-Binary
+
+on: [push] # 每次你上传文件，它就会自动开始编译
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Compiler and Libs
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-arm-linux-gnueabi libmbedtls-dev -y
+
+      - name: Compile Code
+        run: |
+          # 注意：这里的文件名 alice.c 要和你上传的文件名一致
+          arm-linux-gnueabi-gcc alice-sms-pusher源码.c -o alice-sms -lpthread -lmbedtls -lmbedcrypto -static
+
+      - name: Upload Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: alice-sms-arm-binary
+          path: alice-sms
