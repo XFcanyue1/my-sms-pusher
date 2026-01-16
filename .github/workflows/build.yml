@@ -1,13 +1,13 @@
 name: Build-ARM-Binary
 
-on: [push] # 每次你上传文件，它就会自动开始编译
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # 更新到 v4
 
       - name: Install Compiler and Libs
         run: |
@@ -16,11 +16,11 @@ jobs:
 
       - name: Compile Code
         run: |
-          # 注意：这里的文件名 alice.c 要和你上传的文件名一致
+          # 请确保您上传的 C 文件名是 alice.c，如果不是，请改下面这一行
           arm-linux-gnueabi-gcc alice-sms-pusher源码.c -o alice-sms -lpthread -lmbedtls -lmbedcrypto -static
 
       - name: Upload Result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # 修正：必须使用 v4
         with:
           name: alice-sms-arm-binary
           path: alice-sms
