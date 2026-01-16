@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # 必须是 v4
 
       - name: Install Compiler and Libs
         run: |
@@ -16,11 +16,11 @@ jobs:
 
       - name: Compile Code
         run: |
-          # 重点：确保文件名与你上传的一致
-          arm-linux-gnueabi-gcc "alice.c" -o alice-sms -lpthread -lmbedtls -lmbedcrypto -static
+          # 使用 *.c 自动匹配文件名，避免中文乱码导致找不到文件
+          arm-linux-gnueabi-gcc *.c -o alice-sms -lpthread -lmbedtls -lmbedcrypto -static
 
       - name: Upload Result
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4 # 必须是 v4
         with:
           name: alice-sms-arm-binary
           path: alice-sms
